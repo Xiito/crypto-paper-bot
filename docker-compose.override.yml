@@ -1,0 +1,22 @@
+# Local development overrides
+services:
+  bot:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      LOG_LEVEL: DEBUG
+      LOG_JSON_FORMAT: "false"
+    volumes:
+      - ./bot:/app/bot:ro
+      - ./agent:/app/agent:ro
+      - ./db:/app/db:ro
+      - ./config.py:/app/config.py:ro
+
+  postgres:
+    ports:
+      - "5432:5432"
+
+  grafana:
+    environment:
+      GF_LOG_LEVEL: debug
