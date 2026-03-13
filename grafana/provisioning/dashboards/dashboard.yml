@@ -1,0 +1,12 @@
+# Grafana dashboard provisioning config
+apiVersion: 1
+
+providers:
+  - name: TradingBot
+    orgId: 1
+    folder: TradingBot
+    type: file
+    disableDeletion: false
+    updateIntervalSeconds: 30
+    options:
+      path: /etc/grafana/dashboards
