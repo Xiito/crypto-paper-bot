@@ -99,7 +99,7 @@ class SessionManager:
         for pair in config.pairs:
             self._symbol_broker[pair] = "binance"
         for sym in config.stock_symbols:
-            self._symbol_broker[sym] = "alpaca"
+            self._symbol_broker[sym] = "yahoo"
 
     def _get_broker(self, symbol: str) -> Optional[BrokerAdapter]:
         """Get the broker adapter for a given symbol."""
@@ -119,7 +119,7 @@ class SessionManager:
             s for s, b in self._symbol_broker.items() if b == "binance"
         ]
         stock_symbols = [
-            s for s, b in self._symbol_broker.items() if b == "alpaca"
+            s for s, b in self._symbol_broker.items() if b == "yahoo"
         ]
 
         logger.info(
@@ -143,12 +143,12 @@ class SessionManager:
                 )
             )
 
-        if stock_symbols and "alpaca" in self.brokers:
+        if stock_symbols and "yahoo" in self.brokers:
             tasks.append(
                 asyncio.create_task(
                     self._run_asset_loop(
                         symbols=stock_symbols,
-                        broker_name="alpaca",
+                        broker_name="yahoo",
                         asset_class=AssetClass.STOCK,
                         timeframe=self.config.stock_timeframe,
                         poll_interval=self.config.stock_poll_interval_seconds,
