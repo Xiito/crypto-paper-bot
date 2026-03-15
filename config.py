@@ -66,15 +66,6 @@ class BinanceConfig:
 
 
 @dataclass(frozen=True)
-class AlpacaConfig:
-    """Alpaca Paper Trading API configuration."""
-
-    api_key: str
-    api_secret: str
-    paper: bool = True
-
-
-@dataclass(frozen=True)
 class DatabaseConfig:
     """PostgreSQL database configuration."""
 
@@ -147,7 +138,6 @@ class AppConfig:
     """Top-level application configuration combining all sub-configs."""
 
     binance: Optional[BinanceConfig]
-    alpaca: Optional[AlpacaConfig]
     database: DatabaseConfig
     llm: LLMConfig
     trading: TradingConfig
@@ -173,17 +163,6 @@ def load_config() -> AppConfig:
             api_secret=binance_secret,
             testnet=_env_bool("BINANCE_TESTNET", True),
             rate_limit=_env_bool("BINANCE_RATE_LIMIT", True),
-        )
-
-    # Alpaca config (optional — only needed if trading stocks/ETFs)
-    alpaca_key = _env("ALPACA_API_KEY", "")
-    alpaca_secret = _env("ALPACA_API_SECRET", "")
-    alpaca = None
-    if alpaca_key and alpaca_secret:
-        alpaca = AlpacaConfig(
-            api_key=alpaca_key,
-            api_secret=alpaca_secret,
-            paper=_env_bool("ALPACA_PAPER", True),
         )
 
     database = DatabaseConfig(
@@ -224,11 +203,6 @@ def load_config() -> AppConfig:
         raise EnvironmentError(
             f"TRADING_PAIRS is set ({trading_pairs}) but BINANCE_API_KEY/SECRET are missing."
         )
-    if stock_symbols and not alpaca:
-        raise EnvironmentError(
-            f"STOCK_SYMBOLS is set ({stock_symbols}) but ALPACA_API_KEY/SECRET are missing."
-        )
-
     trading = TradingConfig(
         pairs=trading_pairs,
         stock_symbols=stock_symbols,
@@ -262,7 +236,6 @@ def load_config() -> AppConfig:
 
     return AppConfig(
         binance=binance,
-        alpaca=alpaca,
         database=database,
         llm=llm,
         trading=trading,
