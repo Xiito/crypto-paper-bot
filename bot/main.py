@@ -114,31 +114,17 @@ async def build_brokers(config: SessionConfig) -> dict[str, BrokerAdapter]:
             )
             config.pairs = []
 
-    # Alpaca for stocks/ETFs
+    # Yahoo Finance for stocks/ETFs (simulated paper trading)
     if config.stock_symbols:
-        alpaca_key = os.environ.get("ALPACA_API_KEY", "")
-        alpaca_secret = os.environ.get("ALPACA_API_SECRET", "")
+        from bot.broker_yahoo import YahooFinanceAdapter
 
-        if alpaca_key and alpaca_secret:
-            from bot.broker_alpaca import AlpacaAdapter
-
-            adapter = AlpacaAdapter(
-                api_key=alpaca_key,
-                api_secret=alpaca_secret,
-                paper=os.environ.get("ALPACA_PAPER", "true").lower()
-                in ("true", "1", "yes"),
-            )
-            await adapter.connect()
-            brokers["alpaca"] = adapter
-            logger_mod.info(
-                "Alpaca adapter ready: %d stock symbols", len(config.stock_symbols)
-            )
-        else:
-            logger_mod.warning(
-                "ALPACA_API_KEY/SECRET not set — skipping stock symbols: %s",
-                config.stock_symbols,
-            )
-            config.stock_symbols = []
+        adapter = YahooFinanceAdapter()
+        await adapter.connect()
+        brokers["yahoo"] = adapter
+        logger_mod.info(
+            "Yahoo Finance adapter ready: %d stock symbols (simulated)",
+            len(config.stock_symbols),
+        )
 
     return brokers
 
