@@ -35,7 +35,7 @@ class TradeLogger:
         self._session_start = time.time()
         logger.info("TradeLogger initialized: %s", self.log_path)
 
-    def log_entry(self
+    def log_entry(
         self,
         trade_id: str,
         signal: TradeSignal,
