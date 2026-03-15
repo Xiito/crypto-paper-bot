@@ -10,7 +10,7 @@ import time
 from pathlib import Path
 from typing import Optional
 
-from bot.order_executor import OrderResult
+from bot.broker_base import OrderResult
 from bot.risk_manager import PositionSizeResult
 from bot.strategy import TradeSignal
 
